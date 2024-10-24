@@ -14,21 +14,21 @@ PGvector is an extension for PostgreSQL that allows the storage, indexing, and q
 
 ```py
 import os
-from pyvectordb import PostgresVector, Vector
+from pyvectordb import PgvectorDB, Vector
 from pyvectordb.distance_function import DistanceFunction
 
 v = Vector(
-    embedding=[2, 2, 1]
+    embedding=[2., 2., 1.]
 )
 
 print("VECTOR", v)
 
-pgv = PostgresVector(
-    db_user=os.getenv("DB_USER"),
-    db_password=os.getenv("DB_PASSWORD"),
-    db_host=os.getenv("DB_HOST"),
-    db_port=os.getenv("DB_PORT"),
-    db_name=os.getenv("DB_NAME"),
+pgv = PgvectorDB(
+    db_user=os.getenv("PG_USER"),
+    db_password=os.getenv("PG_PASSWORD"),
+    db_host=os.getenv("PG_HOST"),
+    db_port=os.getenv("PG_PORT"),
+    db_name=os.getenv("PG_NAME"),
 )
 
 new_v = pgv.create_vector(v)
@@ -40,11 +40,28 @@ print("READ_VECTOR", new_v)
 new_v = pgv.update_vector(new_v)
 print("UPDATE_VECTOR", new_v)
 
-for x in pgv.get_neighbor_vectors(v, 5, DistanceFunction.L2_DISTANCE):
+for x in pgv.get_neighbor_vectors(v, 5, DistanceFunction.L2):
     print(f"{x}")
 
 pgv.delete_vector(new_v.id)
 print("DELETE_VECTOR")
+```
+
+### Qdrant
+
+Qdrant “is a vector similarity search engine that provides a production-ready service with a convenient API to store, search, and manage points (i.e. vectors) with an additional payload.” You can think of the payloads as additional pieces of information that can help you hone in on your search and also receive useful information that you can give to your users.
+
+Using Qdrant in pyvectordb is simple, you only need to change the client to `QdrantDB`
+
+```py
+qv = QdrantDB(
+    host=os.getenv("Q_HOST"),
+    api_key=os.getenv("Q_API_KEY"),
+    port=os.getenv("Q_PORT"),
+    collection=os.getenv("Q_COLLECTION"),
+    vector_size=int(os.getenv("Q_SIZE")),
+    distance_function=DistanceFunction.COSINE,
+)
 ```
 
 ## Support or Anything
