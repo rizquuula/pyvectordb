@@ -15,6 +15,8 @@ services:
         target: /qdrant/config/production.yaml
     volumes:
       - ./qdrant/data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__API_KEY=889600f2-089f-4e3a-8bc5-07eab5e93d34
 
 configs:
   qdrant_config:

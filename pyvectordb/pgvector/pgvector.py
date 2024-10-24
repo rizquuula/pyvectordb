@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Generator, List
+from typing import Any, Generator, List
 
 from pyvectordb.distance_function import DistanceFunction
 from pyvectordb.vector_distance import VectorDistance
@@ -10,7 +10,7 @@ from pyvectordb.vector import Vector
 from .model import VectorORM
 
 
-class PostgresVector(VectorDB):
+class PgvectorDB(VectorDB):
     
     def __init__(
         self,
@@ -22,6 +22,12 @@ class PostgresVector(VectorDB):
     ) -> None:
         super().__init__()
         
+        self.__is_required(db_user, "db_user")
+        self.__is_required(db_password, "db_password")
+        self.__is_required(db_host, "db_host")
+        self.__is_required(db_port, "db_port")
+        self.__is_required(db_name, "db_name")
+        
         self.__engine = create_engine(
             f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}', 
             echo=True,
@@ -30,6 +36,10 @@ class PostgresVector(VectorDB):
         
         self.conn = next(self.__get_db_session())
 
+    def __is_required(self, text: str, type: str) -> None:
+        if text is None or text == "":
+            raise ValueError(f"{type} is required")
+    
     def __get_db_session(self) -> Generator[Session, None, None]:
         SessionLocal = sessionmaker(
             autocommit=False, 
@@ -47,7 +57,7 @@ class PostgresVector(VectorDB):
         conn = self.conn
         v = VectorORM(
             embedding=vector.embedding,
-            text=vector.text,
+            text=vector.description,
         )
         conn.add(v)
         conn.commit()
@@ -71,7 +81,7 @@ class PostgresVector(VectorDB):
         if v is None: raise ValueError("vector not found in database")
         
         v.embedding = vector.embedding
-        v.text = vector.text
+        v.text = vector.description
         
         conn.add(v)
         conn.commit()
@@ -88,7 +98,7 @@ class PostgresVector(VectorDB):
         self, 
         vector: Vector, 
         n: int=5, 
-        distance_function: DistanceFunction=DistanceFunction.COSINE_DISTANCE,
+        distance_function: DistanceFunction=DistanceFunction.COSINE,
     ) -> List[VectorDistance]:
         vectordistances = []
         distance_func = self.__get_distance_function(distance_function)
@@ -111,18 +121,18 @@ class PostgresVector(VectorDB):
             )
         return vectordistances
     
-    def __get_distance_function(self, selected_distance_function: DistanceFunction) -> DistanceFunction:
-        if selected_distance_function==DistanceFunction.L2_DISTANCE:
+    def __get_distance_function(self, selected_distance_function: DistanceFunction) -> Any:
+        if selected_distance_function==DistanceFunction.L2:
             distance_func = VectorORM.embedding.l2_distance
         elif selected_distance_function==DistanceFunction.MAX_INNER_PRODUCT:
             distance_func = VectorORM.embedding.max_inner_product
-        elif selected_distance_function==DistanceFunction.COSINE_DISTANCE:
+        elif selected_distance_function==DistanceFunction.COSINE:
             distance_func = VectorORM.embedding.cosine_distance
-        elif selected_distance_function==DistanceFunction.L1_DISTANCE:
+        elif selected_distance_function==DistanceFunction.L1:
             distance_func = VectorORM.embedding.l1_distance
-        elif selected_distance_function==DistanceFunction.HAMMING_DISTANCE:
+        elif selected_distance_function==DistanceFunction.HAMMING:
             distance_func = VectorORM.embedding.hamming_distance
-        elif selected_distance_function==DistanceFunction.JACCARD_DISTANCE:
+        elif selected_distance_function==DistanceFunction.JACCARD:
             distance_func = VectorORM.embedding.jaccard_distance
         else:
             raise ValueError("distance function unavailable on pgvector")

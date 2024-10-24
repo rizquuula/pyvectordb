@@ -1,18 +1,29 @@
 import logging
 from typing import List
+from uuid import uuid4
 
 
 class Vector:
     def __init__(
         self,
         embedding: List[float],
-        vector_id: int | None=None,
-        text: str | None=None,
+        vector_id: str | None=None,
+        description: str | None=None,
     ) -> None:
-        self.id = vector_id,
+        if embedding is None or len(embedding) == 0:
+            raise ValueError("embedding is required")
+        
+        self.id = vector_id
         self.embedding = embedding
-        self.text = text
+        self.description = description
 
+    def get_id(self) -> str:
+        if self.id is not None:
+            return self.id
+        
+        self.id = str(uuid4())
+        return self.id
+    
     @staticmethod
     def new_from_dict(data: dict) -> "Vector":
         if data.get("embedding") is None:
@@ -25,7 +36,7 @@ class Vector:
         return Vector(
             vector_id=data.get("id"),
             embedding=data.get("embedding"),
-            text=data.get("text"),
+            description=data.get("text"),
         )
         
     def __len__(self) -> int:
@@ -37,10 +48,10 @@ class Vector:
         else:
             embedding = self.embedding
             
-        if self.text and len(self.text) > 10:
-            text = f"{self.text[:5]}...{self.text[-5:]}"
+        if self.description and len(self.description) > 10:
+            text = f"{self.description[:5]}...{self.description[-5:]}"
         else:
-            text = self.text
+            text = self.description
             
         return f"""Vector[id: {self.id}, embedding: {embedding}, embedding_length: {len(self.embedding)}, text: {text}]"""
     
