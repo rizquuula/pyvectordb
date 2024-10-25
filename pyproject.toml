@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "pyvectordb"
 version = "0.1.2"
-description = ""
+description = "Simple Wrapper for vector database in Python with minimal support for CRUD and retrieve."
 authors = ["M Razif Rizqullah <razifrizqullah@gmail.com>"]
+repository = "https://github.com/rizquuula/pyvectordb"
 readme = "README.md"
 
 [tool.poetry.dependencies]

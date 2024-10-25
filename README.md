@@ -1,6 +1,6 @@
 # PyVectorDB
 
-Simple Wrapper for Vector Database in Python which support CRUD and retrieve by distance.
+Simple Wrapper for vector database in Python with minimal support for CRUD and retrieve.
 
 ## Installation 
 
