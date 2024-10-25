@@ -20,7 +20,6 @@ class QdrantDB(VectorDB):
         collection: str,
         vector_size: int,
         distance_function: DistanceFunction=DistanceFunction.EUCLIDEAN,
-        payload_key: str="description"
     ) -> None:
         super().__init__()
         
@@ -30,7 +29,6 @@ class QdrantDB(VectorDB):
         self.collection = collection or self.__raise_value_error("collection")
         self.vector_size = vector_size or self.__raise_value_error("vector_size")
         self.distance_function = distance_function or self.__raise_value_error("distance_function")
-        self.payload_key = payload_key or self.__raise_value_error("payload_key")
         
         self.client: QdrantClient = None
         
@@ -78,7 +76,7 @@ class QdrantDB(VectorDB):
                 PointStruct(
                     id=vector_id,
                     vector=vector.embedding,
-                    payload={self.payload_key: vector.description}
+                    payload={"metadata": vector.metadata}
                 )
             ],
             wait=False
@@ -87,7 +85,7 @@ class QdrantDB(VectorDB):
         return Vector(
             embedding=vector.embedding,
             vector_id=vector_id,
-            description=vector.description,
+            metadata=vector.metadata,
         )
 
     def read_vector(self, id: int) -> Vector | None:
@@ -104,7 +102,7 @@ class QdrantDB(VectorDB):
         return Vector(
             embedding=record.vector,
             vector_id=record.id,
-            description=record.payload.get(self.payload_key),
+            metadata=record.payload.get("metadata"),
         )
 
     def update_vector(self, vector: Vector) -> Vector:
@@ -117,7 +115,7 @@ class QdrantDB(VectorDB):
                 PointStruct(
                     id=vector.get_id(),
                     vector=vector.embedding,
-                    payload={self.payload_key: vector.description}
+                    payload={"metadata": vector.metadata}
                 )
             ],
             wait=False
@@ -125,7 +123,7 @@ class QdrantDB(VectorDB):
         return Vector(
             embedding=vector.embedding,
             vector_id=vector.get_id(),
-            description=vector.description,
+            metadata=vector.metadata,
         )
 
     def delete_vector(self, id: int) -> None:
@@ -139,15 +137,7 @@ class QdrantDB(VectorDB):
         self,
         vector: Vector,
         n: int,
-        distance_function: DistanceFunction=None,
-    ) -> List[VectorDistance]:
-        logging.warning("distance_function in qdrant for get_neighbor_vector is not used. Qdrant use distance_function from collection initialization.")
-        if distance_function != self.distance_function:
-            # restart client
-            self.distance_function = distance_function
-            self.client = None
-            self.__init__client()
-            
+    ) -> List[VectorDistance]:    
         scored_points: List[ScoredPoint] = self.client.search(
             collection_name=self.collection,
             query_vector=vector.embedding,
@@ -161,7 +151,7 @@ class QdrantDB(VectorDB):
                 vector=Vector(
                     embedding=point.vector,
                     vector_id=point.id,
-                    description=point.payload.get(self.payload_key),
+                    metadata=point.payload.get("metadata"),
                 ),
                 distance=point.score,
             )

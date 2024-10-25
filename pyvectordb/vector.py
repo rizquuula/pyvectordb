@@ -8,36 +8,27 @@ class Vector:
         self,
         embedding: List[float],
         vector_id: str | None=None,
-        description: str | None=None,
+        metadata: dict | None=None,
+        init_id: bool=False,
     ) -> None:
+        
         if embedding is None or len(embedding) == 0:
-            raise ValueError("embedding is required")
+            self.__raise_value_error("embedding")
+        self.embedding =  embedding
         
         self.id = vector_id
-        self.embedding = embedding
-        self.description = description
-
-    def get_id(self) -> str:
-        if self.id is not None:
-            return self.id
+        self.metadata = metadata
         
-        self.id = str(uuid4())
-        return self.id
-    
+        if init_id: self.get_id()
+        
     @staticmethod
-    def new_from_dict(data: dict) -> "Vector":
-        if data.get("embedding") is None:
-            raise ValueError("embedding is required")
-        
-        if isinstance(data.get("embedding"), list):
-            logging.debug(f"invalid embedding: {data.get("embedding")}")
-            raise ValueError("invalid embedding: invalid format")
-        
-        return Vector(
-            vector_id=data.get("id"),
-            embedding=data.get("embedding"),
-            description=data.get("text"),
-        )
+    def __raise_value_error(param: str):
+        raise ValueError(f"{param} is required")
+    
+    def get_id(self) -> str:
+        if self.id is None:
+            self.id = str(uuid4())
+        return self.id
         
     def __len__(self) -> int:
         return len(self.embedding)
@@ -48,12 +39,12 @@ class Vector:
         else:
             embedding = self.embedding
             
-        if self.description and len(self.description) > 10:
-            text = f"{self.description[:5]}...{self.description[-5:]}"
+        if self.metadata and len(self.metadata) > 10:
+            metadata = f"{self.metadata[:5]}...{self.metadata[-5:]}"
         else:
-            text = self.description
+            metadata = self.metadata
             
-        return f"""Vector[id: {self.id}, embedding: {embedding}, embedding_length: {len(self.embedding)}, text: {text}]"""
+        return f"""Vector[id: {self.id}, embedding: {embedding}, embedding_length: {len(self.embedding)}, metadata: {metadata}]"""
     
     def __repr__(self) -> str:
         return self.__str__()

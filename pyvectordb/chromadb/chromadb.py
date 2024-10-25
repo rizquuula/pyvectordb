@@ -70,7 +70,7 @@ class ChromaDB(VectorDB):
         self.collection.add(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
-            metadatas=[{"description": vector.description}],
+            metadatas=[{"metadata": vector.metadata}],
         )
         return vector
 
@@ -82,14 +82,14 @@ class ChromaDB(VectorDB):
         return Vector(
             vector_id=result.get("ids")[0],
             embedding=result.get("embeddings")[0],
-            description=result.get("metadatas")[0].get("description")
+            metadata=result.get("metadatas")[0].get("metadata")
         )
 
     def update_vector(self, vector: Vector) -> Vector:
         self.collection.update(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
-            metadatas=[{"description": vector.description}],
+            metadatas=[{"metadata": vector.metadata}],
         )
         return vector
 
@@ -102,10 +102,7 @@ class ChromaDB(VectorDB):
         self, 
         vector: Vector, 
         n: int, 
-        distance_function: DistanceFunction=None,
     ) -> List[VectorDistance]:
-        logging.warning("distance_function in chromadb for get_neighbor_vector is not used. ChromaDB use distance_function from collection initialization.")
-        
         result: dict = self.collection.query(
             query_embeddings=[vector.embedding],
             n_results=n,
@@ -118,7 +115,7 @@ class ChromaDB(VectorDB):
                 vector=Vector(
                     vector_id=result.get("ids")[0][i],
                     embedding=result.get("embeddings")[0][i],
-                    description=result.get("metadatas")[0][i]
+                    metadata=result.get("metadatas")[0][i]
                 ),
                 distance=result.get("distances")[0][i]
             )

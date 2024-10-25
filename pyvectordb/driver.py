@@ -25,5 +25,5 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
-    def get_neighbor_vectors(self, vector: Vector, n: int, distance_function: DistanceFunction) -> List[VectorDistance]:
+    def get_neighbor_vectors(self, vector: Vector, n: int) -> List[VectorDistance]:
         ...
