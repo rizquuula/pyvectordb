@@ -1,11 +1,10 @@
 services:
   pgvector:
-    hostname: db
     image: pgvector/pgvector:0.7.4-pg17
     container_name: pgvector
+    restart: unless-stopped
     ports:
       - 5432:5432
-    restart: unless-stopped
     environment:
       - POSTGRES_DB=vectordb
       - POSTGRES_USER=vector

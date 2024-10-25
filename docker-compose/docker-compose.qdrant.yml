@@ -1,8 +1,8 @@
 services:
   qdrant:
     image: qdrant/qdrant:latest
-    restart: always
     container_name: qdrant
+    restart: unless-stopped
     ports:
       - 6333:6333
       - 6334:6334
