@@ -64,6 +64,21 @@ qv = QdrantDB(
 )
 ```
 
+### Chroma DB
+
+Chroma is the AI-native open-source vector database. Chroma makes it easy to build LLM apps by making knowledge, facts, and skills pluggable for LLMs.
+
+```py
+qv = ChromaDB(
+    host=os.getenv("CH_HOST"),
+    port=os.getenv("CH_PORT"),
+    auth_provider=os.getenv("CH_AUTH_PROVIDER"),
+    auth_credentials=os.getenv("CH_AUTH_CREDENTIALS"),
+    collection_name=os.getenv("CH_COLLECTION_NAME"),
+    distance_function=DistanceFunction.L2,
+)
+```
+
 ## Support or Anything
 
 Reach me out on email razifrizqullah@gmail.com

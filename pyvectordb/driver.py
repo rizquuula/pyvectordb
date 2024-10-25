@@ -13,7 +13,7 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
-    def read_vector(self, id: int) -> Vector | None:
+    def read_vector(self, id: str) -> Vector | None:
         ...
 
     @abstractmethod
@@ -21,7 +21,7 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
-    def delete_vector(self, id: int) -> None:
+    def delete_vector(self, id: str) -> None:
         ...
 
     @abstractmethod

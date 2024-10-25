@@ -1,0 +1,25 @@
+services:
+  chromadb:
+    image: chromadb/chroma:0.5.13
+    container_name: chromadb
+    restart: unless-stopped
+    volumes:
+      - ./chromadb/data:/chroma/chroma
+      - ./chromadb/authz.yaml:/chroma/authz.yaml
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-TRUE}
+      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=X-Chroma-Token
+      - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=/chroma/authz.yaml
+      - CHROMA_SERVER_AUTHZ_CONFIG_FILE=/chroma/authz.yaml
+      - CHROMA_SERVER_AUTHN_PROVIDER=chromadb.auth.token_authn.TokenAuthenticationServerProvider
+      # - CHROMA_SERVER_AUTHZ_PROVIDER=chromadb.auth.simple_rbac_authz.SimpleRBACAuthorizationProvider
+    ports:
+      - 61892:8000
+    networks:
+      - chromadb_net
+
+networks:
+  chromadb_net:
+    driver: bridge

@@ -1,2 +1,4 @@
 pgvector/data
 qdrant/data
+chromadb/data
+authz.yaml

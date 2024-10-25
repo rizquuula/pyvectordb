@@ -1,0 +1,16 @@
+# just example, rename this to authz.yaml and reconfigure your `users` to start working
+
+# `users` config is used by both TokenAuthenticationServerProvider and
+# SimpleRBACAuthorizationServerProvider.
+# - TokenAuthenticationProvider only needs the id and tokens.
+# - SimpleRBACAuthorizationProvider only needs the id and the role.
+
+users:
+  - id: user@example.com
+    role: admin
+    tokens:
+      - test-token-admin
+  - id: Anonymous
+    role: db_read
+    tokens:
+      - my_api_token
