@@ -54,6 +54,8 @@ Qdrant “is a vector similarity search engine that provides a production-ready 
 Using Qdrant in pyvectordb is simple, you only need to change the client to `QdrantDB`
 
 ```py
+from pyvectordb import QdrantDB
+
 qv = QdrantDB(
     host=os.getenv("Q_HOST"),
     api_key=os.getenv("Q_API_KEY"),
@@ -69,6 +71,8 @@ qv = QdrantDB(
 Chroma is the AI-native open-source vector database. Chroma makes it easy to build LLM apps by making knowledge, facts, and skills pluggable for LLMs.
 
 ```py
+from pyvectordb import ChromaDB
+
 qv = ChromaDB(
     host=os.getenv("CH_HOST"),
     port=os.getenv("CH_PORT"),
