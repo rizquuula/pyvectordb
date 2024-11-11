@@ -1,5 +1,6 @@
 import os
-from pyvectordb import QdrantDB, Vector
+from pyvectordb import Vector
+from pyvectordb.qdrant import QdrantDB
 from pyvectordb.distance_function import DistanceFunction
 
 v = Vector(

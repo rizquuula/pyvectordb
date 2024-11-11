@@ -1,5 +1,6 @@
 import os
-from pyvectordb import ChromaDB, Vector
+from pyvectordb import Vector
+from pyvectordb.chromadb import ChromaDB
 from pyvectordb.distance_function import DistanceFunction
 
 v = Vector(

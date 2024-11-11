@@ -1,5 +1,6 @@
 import os
-from pyvectordb import PgvectorDB, Vector
+from pyvectordb import Vector
+from pyvectordb.pgvector import PgvectorDB
 from pyvectordb.distance_function import DistanceFunction
 
 v = Vector(

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyvectordb"
-version = "0.1.2"
+version = "0.1.3"
 description = "Simple Wrapper for vector database in Python with minimal support for CRUD and retrieve."
 authors = ["M Razif Rizqullah <razifrizqullah@gmail.com>"]
 repository = "https://github.com/rizquuula/pyvectordb"
@@ -10,9 +10,9 @@ readme = "README.md"
 python = "^3.12"
 pgvector = "^0.3.5"
 sqlalchemy = "^2.0.36"
-psycopg2 = "^2.9.10"
 qdrant-client = "^1.12.0"
 chromadb = "^0.5.15"
+psycopg2-binary = "^2.9.10"
 
 
 [build-system]
