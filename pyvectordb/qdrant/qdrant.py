@@ -67,7 +67,7 @@ class QdrantDB(VectorDB):
         
         return distance_func
 
-    def create_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> Vector:
         vector_id = vector.get_id()
 
         self.client.upsert(

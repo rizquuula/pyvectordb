@@ -66,11 +66,11 @@ class ChromaDB(VectorDB):
                 metadata={"hnsw:space": distance_func.value}
             )
 
-    def create_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> Vector:
         self.collection.add(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
-            metadatas=[{"metadata": vector.metadata}],
+            metadatas=[vector.metadata],
         )
         return vector
 

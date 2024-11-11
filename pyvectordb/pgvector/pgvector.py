@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
         self.conn.commit()
         
 
-    def create_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> Vector:
         conn = self.conn
         
         v = self.__vector_orm(

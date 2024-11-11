@@ -18,7 +18,7 @@ qv = QdrantDB(
     distance_function=DistanceFunction.COSINE,
 )
 
-new_v = qv.create_vector(v)
+new_v = qv.insert_vector(v)
 print("CREATE_VECTOR", new_v)
 
 new_v = qv.read_vector(new_v.id)

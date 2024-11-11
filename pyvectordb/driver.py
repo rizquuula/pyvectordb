@@ -9,7 +9,7 @@ from .vector import Vector
 class VectorDB(ABC):
 
     @abstractmethod
-    def create_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> Vector:
         ...
 
     @abstractmethod

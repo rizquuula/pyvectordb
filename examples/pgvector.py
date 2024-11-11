@@ -19,7 +19,7 @@ pgv = PgvectorDB(
     distance_function=DistanceFunction.L2,
 )
 
-new_v = pgv.create_vector(v)
+new_v = pgv.insert_vector(v)
 print("CREATE_VECTOR", new_v)
 
 new_v = pgv.read_vector(new_v.id)

@@ -18,7 +18,7 @@ ch = ChromaDB(
     distance_function=DistanceFunction.L2,
 )
 
-new_v = ch.create_vector(v)
+new_v = ch.insert_vector(v)
 print("CREATE_VECTOR", new_v)
 
 new_v = ch.read_vector(new_v.id)
