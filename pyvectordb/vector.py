@@ -14,7 +14,7 @@ class Vector:
         
         if embedding is None or len(embedding) == 0:
             self.__raise_value_error("embedding")
-        self.embedding =  embedding
+        self.embedding =  embedding if embedding is not None else {}
         
         self.id = vector_id
         self.metadata = metadata
