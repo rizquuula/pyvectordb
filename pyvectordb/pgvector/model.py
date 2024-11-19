@@ -10,17 +10,19 @@ class Base(DeclarativeBase):
         return {field.name:getattr(self, field.name) for field in self.__table__.c}
 
 
-def get_vector_orm(tablename: str) -> Base:
+class VectorORM(Base):
+    __abstract__ = True
+    
+    id: Mapped[str] = Column(String, primary_key=True)
+    embedding: Mapped[Vector] = mapped_column(Vector())
+    metadata_: Mapped[str] = Column(String, nullable=False, name="metadata")
+    created_at: Mapped[datetime] = Column(DateTime, nullable=False, default=datetime.now())
         
-    class VectorORM(Base):
+
+def get_vector_orm(tablename: str) -> "VectorORM":
+    class VectorORMreal(VectorORM):
         __tablename__ = tablename
-        
-        id: Mapped[str] = Column(String, primary_key=True)
-        embedding: Mapped[Vector] = mapped_column(Vector())
-        metadata_: Mapped[str] = Column(String, nullable=False, name="metadata")
-        created_at: Mapped[datetime] = Column(DateTime, nullable=False, default=datetime.now())
-        
-    return VectorORM
+    return VectorORMreal
 
 
 # def get_vector_orm(table_name: str, engine) -> DefaultVectorORM:

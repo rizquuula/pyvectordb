@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List
 from uuid import uuid4
@@ -8,7 +9,7 @@ class Vector:
         self,
         embedding: List[float],
         vector_id: str | None=None,
-        metadata: dict | None=None,
+        metadata: dict | str | None=None,
         init_id: bool=False,
     ) -> None:
         
@@ -17,7 +18,7 @@ class Vector:
         self.embedding =  embedding if embedding is not None else {}
         
         self.id = vector_id
-        self.metadata = metadata
+        self.metadata = self.metadata_from_string(metadata) if isinstance(metadata, str) else metadata
         
         if init_id: self.get_id()
         
@@ -29,6 +30,13 @@ class Vector:
         if self.id is None:
             self.id = str(uuid4())
         return self.id
+    
+    def metadata_to_string(self) -> str:
+        return json.dumps(self.metadata)
+    
+    def metadata_from_string(self, metadata: str) -> dict:
+        self.metadata = json.loads(metadata)
+        return self.metadata
         
     def __len__(self) -> int:
         return len(self.embedding)

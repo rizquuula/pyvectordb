@@ -129,9 +129,9 @@ class ChromaDB(VectorDB):
             metadatas=metadatas,
         )
 
-    def delete_vector(self, id: str) -> None:
+    def delete_vector(self, id_: str) -> None:
         self.collection.delete(
-            ids=[id],
+            ids=[id_],
         )
     
     def delete_vectors(self, ids: Union[List[str], List[Vector]]) -> None:
