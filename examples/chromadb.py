@@ -6,9 +6,17 @@ from pyvectordb import Vector
 from pyvectordb.chromadb import ChromaDB
 from pyvectordb.distance_function import DistanceFunction
 
-v = Vector(
+v1 = Vector(
     embedding=[2., 2., 1.],
     metadata={"text": "hellow from pyvectordb"}
+)
+v2 = Vector(
+    embedding=[2., 2., 2.],
+    metadata={"text": "hi"}
+)
+v3 = Vector(
+    embedding=[2., 2., 3.],
+    metadata={"text": "good morning!"}
 )
 
 ch = ChromaDB(
@@ -21,11 +29,14 @@ ch = ChromaDB(
 )
 
 # full flow test
-ch.insert_vector(v)
-new_v = ch.read_vector(v.get_id())
+ch.insert_vector(v1)
+ch.insert_vectors([v2, v3])
+new_v = ch.read_vector(v1.get_id())
 ch.update_vector(new_v)
+ch.update_vectors([v1, v2, v3])
 
-for x in ch.get_neighbor_vectors(v, 3):
+for x in ch.get_neighbor_vectors(v1, 3):
     print(f"{x}")
 
-ch.delete_vector(v.get_id())
+ch.delete_vector(v1.get_id())
+ch.delete_vectors([v2, v3])

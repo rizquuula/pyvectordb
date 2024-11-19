@@ -1,6 +1,6 @@
 import chromadb
 from chromadb.config import Settings
-from typing import List
+from typing import List, Union
 
 from pyvectordb.distance_function import DistanceFunction
 from pyvectordb.vector_distance import VectorDistance
@@ -72,7 +72,22 @@ class ChromaDB(VectorDB):
             embeddings=[vector.embedding],
             metadatas=[vector.metadata],
         )
-
+    
+    def insert_vectors(self, vectors: List[Vector]) -> None:
+        if len(vectors) == 0: return
+        
+        ids, embeddings, metadatas = [], [], []
+        for v in vectors:
+            ids.append(v.get_id())
+            embeddings.append(v.embedding)
+            metadatas.append(v.metadata)
+            
+        self.collection.add(
+            ids=ids,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
+        
     def read_vector(self, id: str) -> Vector | None:
         result: dict = self.collection.get(
             ids=id,
@@ -98,10 +113,35 @@ class ChromaDB(VectorDB):
             embeddings=[vector.embedding],
             metadatas=[vector.metadata],
         )
+    
+    def update_vectors(self, vectors: List[Vector]) -> None:
+        if len(vectors) == 0: return
+        
+        ids, embeddings, metadatas = [], [], []
+        for v in vectors:
+            ids.append(v.id)
+            embeddings.append(v.embedding)
+            metadatas.append(v.metadata)
+            
+        self.collection.update(
+            ids=ids,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
 
     def delete_vector(self, id: str) -> None:
         self.collection.delete(
             ids=[id],
+        )
+    
+    def delete_vectors(self, ids: Union[List[str], List[Vector]]) -> None:
+        if len(ids) == 0: return
+        
+        if isinstance(ids[0], Vector):
+            ids = [v.id for v in ids]
+        
+        self.collection.delete(
+            ids=ids,
         )
 
     def get_neighbor_vectors(

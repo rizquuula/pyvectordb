@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 import socket
-from typing import List
+from typing import List, Union
 
 from .vector_distance import VectorDistance
 from .vector import Vector
@@ -26,6 +26,10 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
+    def insert_vectors(self, vectors: List[Vector]) -> None:
+        ...
+
+    @abstractmethod
     def read_vector(self, id: str) -> Vector | None:
         ...
 
@@ -34,7 +38,15 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
+    def update_vectors(self, vectors: List[Vector]) -> None:
+        ...
+
+    @abstractmethod
     def delete_vector(self, id: str) -> None:
+        ...
+    
+    @abstractmethod
+    def delete_vectors(self, ids: Union[List[str], List[Vector]]) -> None:
         ...
 
     @abstractmethod
