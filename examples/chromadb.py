@@ -19,7 +19,7 @@ v3 = Vector(
     metadata={"text": "good morning!"}
 )
 
-ch = ChromaDB(
+vector_db = ChromaDB(
     host=os.getenv("CH_HOST"),
     port=os.getenv("CH_PORT"),
     auth_provider=os.getenv("CH_AUTH_PROVIDER"),
@@ -29,14 +29,14 @@ ch = ChromaDB(
 )
 
 # full flow test
-ch.insert_vector(v1)
-ch.insert_vectors([v2, v3])
-new_v = ch.read_vector(v1.get_id())
-ch.update_vector(new_v)
-ch.update_vectors([v1, v2, v3])
+vector_db.insert_vector(v1)
+vector_db.insert_vectors([v2, v3])
+new_v = vector_db.read_vector(v1.get_id())
+vector_db.update_vector(new_v)
+vector_db.update_vectors([v1, v2, v3])
 
-for x in ch.get_neighbor_vectors(v1, 3):
+for x in vector_db.get_neighbor_vectors(v1, 3):
     print(f"{x}")
 
-ch.delete_vector(v1.get_id())
-ch.delete_vectors([v2, v3])
+vector_db.delete_vector(v1.get_id())
+vector_db.delete_vectors([v2, v3])
