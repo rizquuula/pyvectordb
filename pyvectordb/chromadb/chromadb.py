@@ -1,4 +1,3 @@
-import logging
 import chromadb
 from chromadb.config import Settings
 from typing import List
@@ -21,8 +20,9 @@ class ChromaDB(VectorDB):
         auth_credentials: str,
         collection_name: str,
         distance_function: DistanceFunction=DistanceFunction.L2,
+        debug: bool=False
     ) -> None:
-        super().__init__()
+        super().__init__(host, port, debug)
         
         self.host = host or self.__raise_value_error("host")
         self.port = port or self.__raise_value_error("port")
@@ -79,17 +79,25 @@ class ChromaDB(VectorDB):
             ids=id,
             include=["metadatas", "documents", "embeddings"]
         )
+        
+        if len(result.get("ids")) == 0:
+            return None
+        
+        vector_id = result.get("ids")[0]
+        embedding = result.get("embeddings")[0]
+        metadata = result.get("metadatas")[0]
+
         return Vector(
-            vector_id=result.get("ids")[0],
-            embedding=result.get("embeddings")[0],
-            metadata=result.get("metadatas")[0].get("metadata")
+            embedding=embedding,
+            vector_id=vector_id,
+            metadata=metadata,
         )
 
     def update_vector(self, vector: Vector) -> Vector:
         self.collection.update(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
-            metadatas=[{"metadata": vector.metadata}],
+            metadatas=[vector.metadata],
         )
         return vector
 

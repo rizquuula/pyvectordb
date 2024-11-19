@@ -1,6 +1,6 @@
 services:
   chromadb:
-    image: chromadb/chroma:0.5.13
+    image: chromadb/chroma:0.5.18
     container_name: chromadb
     restart: unless-stopped
     volumes:
@@ -16,7 +16,7 @@ services:
       - CHROMA_SERVER_AUTHN_PROVIDER=chromadb.auth.token_authn.TokenAuthenticationServerProvider
       # - CHROMA_SERVER_AUTHZ_PROVIDER=chromadb.auth.simple_rbac_authz.SimpleRBACAuthorizationProvider
     ports:
-      - 61892:8000
+      - 8001:8000
     networks:
       - chromadb_net
 
