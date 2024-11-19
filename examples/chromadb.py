@@ -28,12 +28,26 @@ vector_db = ChromaDB(
     distance_function=DistanceFunction.L2,
 )
 
-# full flow test
+# insert new vector
 vector_db.insert_vector(v1)
 vector_db.insert_vectors([v2, v3])
-new_v = vector_db.read_vector(v1.get_id())
-vector_db.update_vector(new_v)
+
+# read v1
+v_from_db = vector_db.read_vector(v1.get_id())
+
+# update v1 embedding
+new_embedding = [2., 2., 4.]
+v_from_db.embedding = new_embedding
+vector_db.update_vector(v_from_db)
+
+# read updated embedding and check
+v_from_db_updated = vector_db.read_vector(v1.get_id())
+assert all(v_from_db_updated.embedding == new_embedding)
+
+# re-update v1 embedding to the v1, check
 vector_db.update_vectors([v1, v2, v3])
+re_updated_embedding = vector_db.read_vector(v1.get_id()).embedding
+assert all(re_updated_embedding == v1.embedding)
 
 for x in vector_db.get_neighbor_vectors(v1, 3):
     print(f"{x}")
