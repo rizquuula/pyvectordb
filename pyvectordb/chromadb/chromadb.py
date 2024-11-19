@@ -66,13 +66,12 @@ class ChromaDB(VectorDB):
                 metadata={"hnsw:space": distance_func.value}
             )
 
-    def insert_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> None:
         self.collection.add(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
             metadatas=[vector.metadata],
         )
-        return vector
 
     def read_vector(self, id: str) -> Vector | None:
         result: dict = self.collection.get(
@@ -93,13 +92,12 @@ class ChromaDB(VectorDB):
             metadata=metadata,
         )
 
-    def update_vector(self, vector: Vector) -> Vector:
+    def update_vector(self, vector: Vector) -> None:
         self.collection.update(
             ids=[vector.get_id()],
             embeddings=[vector.embedding],
             metadatas=[vector.metadata],
         )
-        return vector
 
     def delete_vector(self, id: str) -> None:
         self.collection.delete(

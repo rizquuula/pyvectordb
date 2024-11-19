@@ -22,7 +22,7 @@ class VectorDB(ABC):
         self.__test_connection(host, port)
 
     @abstractmethod
-    def insert_vector(self, vector: Vector) -> Vector:
+    def insert_vector(self, vector: Vector) -> None:
         ...
 
     @abstractmethod
@@ -30,7 +30,7 @@ class VectorDB(ABC):
         ...
 
     @abstractmethod
-    def update_vector(self, vector: Vector) -> Vector:
+    def update_vector(self, vector: Vector) -> None:
         ...
 
     @abstractmethod

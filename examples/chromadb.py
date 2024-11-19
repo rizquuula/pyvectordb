@@ -1,13 +1,15 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 from pyvectordb import Vector
 from pyvectordb.chromadb import ChromaDB
 from pyvectordb.distance_function import DistanceFunction
 
 v = Vector(
-    embedding=[2., 2., 1.]
+    embedding=[2., 2., 1.],
+    metadata={"text": "hellow from pyvectordb"}
 )
-
-print("VECTOR", v)
 
 ch = ChromaDB(
     host=os.getenv("CH_HOST"),
@@ -18,18 +20,12 @@ ch = ChromaDB(
     distance_function=DistanceFunction.L2,
 )
 
-new_v = ch.insert_vector(v)
-print("CREATE_VECTOR", new_v)
-
-new_v = ch.read_vector(new_v.id)
-print("READ_VECTOR", new_v)
-
-new_v = ch.update_vector(new_v)
-print("UPDATE_VECTOR", new_v)
+# full flow test
+ch.insert_vector(v)
+new_v = ch.read_vector(v.get_id())
+ch.update_vector(new_v)
 
 for x in ch.get_neighbor_vectors(v, 3):
     print(f"{x}")
 
-ch.delete_vector(new_v.id)
-print("DELETE_VECTOR")
-
+ch.delete_vector(v.get_id())
