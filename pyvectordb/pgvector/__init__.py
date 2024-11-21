@@ -20,7 +20,7 @@ class PgvectorDB(VectorDB):
         password: str,
         db_name: str,
         collection: str,
-        distance_function: DistanceFunction=DistanceFunction.L2,
+        distance_function: DistanceFunction | str=DistanceFunction.L2,
     ) -> None:
         super().__init__(host, port)
         
@@ -185,18 +185,21 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
             )
         return vectordistances
     
-    def __get_distance_function(self, selected_distance_function: DistanceFunction) -> Any:
-        if selected_distance_function==DistanceFunction.L2:
+    def __get_distance_function(self, distance_function: DistanceFunction | str) -> Any:
+        if isinstance(distance_function, str):
+            distance_function = DistanceFunction.from_str(distance_function)
+        
+        if distance_function==DistanceFunction.L2:
             return self.__vector_orm.embedding.l2_distance
-        elif selected_distance_function==DistanceFunction.MAX_INNER_PRODUCT:
+        elif distance_function==DistanceFunction.MAX_INNER_PRODUCT:
             return self.__vector_orm.embedding.max_inner_product
-        elif selected_distance_function==DistanceFunction.COSINE:
+        elif distance_function==DistanceFunction.COSINE:
             return self.__vector_orm.embedding.cosine_distance
-        elif selected_distance_function==DistanceFunction.L1:
+        elif distance_function==DistanceFunction.L1:
             return self.__vector_orm.embedding.l1_distance
-        elif selected_distance_function==DistanceFunction.HAMMING:
+        elif distance_function==DistanceFunction.HAMMING:
             return self.__vector_orm.embedding.hamming_distance
-        elif selected_distance_function==DistanceFunction.JACCARD:
+        elif distance_function==DistanceFunction.JACCARD:
             return self.__vector_orm.embedding.jaccard_distance
         else:
             raise ValueError(f"distance function unavailable on pgvector: : {[

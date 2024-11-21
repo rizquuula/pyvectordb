@@ -19,7 +19,7 @@ class ChromaDB(VectorDB):
         auth_provider: str,
         auth_credentials: str,
         collection_name: str,
-        distance_function: DistanceFunction=DistanceFunction.L2,
+        distance_function: DistanceFunction | str=DistanceFunction.L2,
         debug: bool=False
     ) -> None:
         super().__init__(host, port, debug)
@@ -169,12 +169,15 @@ class ChromaDB(VectorDB):
                               
         return vds
 
-    def __get_distance_function(self, distance: DistanceFunction) -> Distance:
-        if distance == DistanceFunction.L2:
+    def __get_distance_function(self, distance_function: DistanceFunction | str) -> Distance:
+        if isinstance(distance_function, str):
+            distance_function = DistanceFunction.from_str(distance_function)
+            
+        if distance_function == DistanceFunction.L2:
             return Distance.SQUARED_L2
-        elif distance == DistanceFunction.MAX_INNER_PRODUCT:
+        elif distance_function == DistanceFunction.MAX_INNER_PRODUCT:
             return Distance.INNER_PRODUCT
-        elif distance == DistanceFunction.COSINE:
+        elif distance_function == DistanceFunction.COSINE:
             return Distance.COSINE_SIMILARITY
         else:
             raise ValueError(f"distance function unavailable on chromadb. {[
