@@ -1,7 +1,7 @@
 from datetime import datetime
 from pgvector.sqlalchemy import Vector
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
-from sqlalchemy import Column, String, DateTime, Table
+from sqlalchemy import Column, String, DateTime
 
 
 class Base(DeclarativeBase):
@@ -23,11 +23,3 @@ def get_vector_orm(tablename: str) -> "VectorORM":
     class VectorORMreal(VectorORM):
         __tablename__ = tablename
     return VectorORMreal
-
-
-# def get_vector_orm(table_name: str, engine) -> DefaultVectorORM:
-#     v = DefaultVectorORM
-#     v.__tablename__ = table_name
-    
-#     v.__table__ = Table(table_name, Base.metadata, autoload_with=engine)
-#     return v

@@ -177,4 +177,8 @@ class ChromaDB(VectorDB):
         elif distance == DistanceFunction.COSINE:
             return Distance.COSINE_SIMILARITY
         else:
-            raise ValueError(f"distance function unavailable on chromadb. [{Distance}]")
+            raise ValueError(f"distance function unavailable on chromadb. {[
+                'L2',
+                'MAX_INNER_PRODUCT',
+                'COSINE    ',
+            ]}")
