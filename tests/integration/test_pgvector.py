@@ -3,7 +3,7 @@ load_dotenv()
 
 import os
 from pyvectordb import Vector
-from pyvectordb.pgvector.pgvector import PgvectorDB
+from pyvectordb.pgvector import PgvectorDB
 from pyvectordb.distance_function import DistanceFunction
 
 def test_integration():

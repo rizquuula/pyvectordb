@@ -3,7 +3,7 @@ load_dotenv()
 
 import os
 from pyvectordb import Vector
-from pyvectordb.qdrant.qdrant import QdrantDB
+from pyvectordb.qdrant import QdrantDB
 from pyvectordb.distance_function import DistanceFunction
 
 v1 = Vector(
