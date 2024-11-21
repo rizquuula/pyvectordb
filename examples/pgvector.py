@@ -43,12 +43,12 @@ vector_db.update_vector(v_from_db)
 
 # read updated embedding and check
 v_from_db_updated = vector_db.read_vector(v1.get_id())
-assert v_from_db_updated.embedding == new_embedding, "updated embedding not equal"
+assert list(v_from_db_updated.embedding) == list(new_embedding), "updated embedding not equal"
 
 # re-update v1 embedding to the v1, check
 vector_db.update_vectors([v1, v2, v3])
 re_updated_embedding = vector_db.read_vector(v1.get_id()).embedding
-assert re_updated_embedding == v1.embedding, "re-updated embedding not equal"
+assert list(re_updated_embedding) == list(v1.embedding), "re-updated embedding not equal"
 
 for x in vector_db.get_neighbor_vectors(v1, 3):
     print(f"{x}")
