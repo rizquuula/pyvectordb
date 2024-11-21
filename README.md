@@ -21,9 +21,26 @@ Born to be simple. **Simple** Python wrapper provides efficient support for CRUD
 
 ### Installation 
 
+To install all vector database support depedencies _(require a lot of disk space, not recommended)_
+
 ```sh
-pip install pyvectordb
+pip install pyvectordb[all]
 ```
+
+if you only need a specific vector database engine, you can use **(recommended)**
+
+```sh
+pip install pyvectordb[pgvector]
+```
+
+```sh
+pip install pyvectordb[qdrant]
+```
+
+```sh
+pip install pyvectordb[chromadb]
+```
+
 ### Usage examples 
 
 #### 1. PGVector
