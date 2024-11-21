@@ -1,14 +1,32 @@
 # PyVectorDB
 
-Simple Wrapper for vector database in Python with minimal support for CRUD and retrieve.
+Born to be simple. **Simple** Python wrapper provides efficient support for CRUD operations and querying with vector databases.".
 
-## Installation 
+[![GitHub license](https://img.shields.io/github/license/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/network)
+![GitHub watchers](https://img.shields.io/github/watchers/rizquuula/pyvectordb)
+[![GitHub issues](https://img.shields.io/github/issues/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/pulls)
+[![Contributors](https://img.shields.io/github/contributors/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/graphs/contributors)
+![GitHub last commit](https://img.shields.io/github/last-commit/rizquuula/pyvectordb)
+![Commit activity](https://img.shields.io/github/commit-activity/y/rizquuula/pyvectordb)
+[![GitHub repo size](https://img.shields.io/github/repo-size/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
+[![GitHub languages](https://img.shields.io/github/languages/top/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
+[![GitHub languages count](https://img.shields.io/github/languages/count/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
 
-    pip install pyvectordb
+---
 
-## Usage Example
+## 🚀 Getting Started
 
-### PGVector
+### Installation 
+
+```sh
+pip install pyvectordb
+```
+### Usage examples 
+
+#### 1. PGVector
 
 PGvector is an extension for PostgreSQL that allows the storage, indexing, and querying of vector embeddings. It is designed to support vector similarity search, which is useful in machine learning applications like natural language processing, image recognition, and recommendation systems. By storing vector embeddings as a data type, PGvector enables efficient similarity searches using distance metrics such as cosine similarity, Euclidean distance, inner product, etc.
 
@@ -72,7 +90,7 @@ vector_db.delete_vector(v1.get_id())
 vector_db.delete_vectors([v2, v3])
 ```
 
-### Qdrant
+#### 2. Qdrant
 
 Qdrant “is a vector similarity search engine that provides a production-ready service with a convenient API to store, search, and manage points (i.e. vectors) with an additional payload.” You can think of the payloads as additional pieces of information that can help you hone in on your search and also receive useful information that you can give to your users.
 
@@ -91,7 +109,7 @@ vector_db = QdrantDB(
 )
 ```
 
-### Chroma DB
+#### 3. Chroma DB
 
 Chroma is the AI-native open-source vector database. Chroma makes it easy to build LLM apps by making knowledge, facts, and skills pluggable for LLMs.
 
@@ -108,7 +126,7 @@ vector_db = ChromaDB(
 )
 ```
 
-## Available functions
+### Available functions
 
 These are available functions in this simple tool
 
@@ -123,6 +141,22 @@ def delete_vectors(self, ids: Union[List[str], List[Vector]]) -> None: ...
 def get_neighbor_vectors(self, vector: Vector, n: int) -> List[VectorDistance]: ...
 ```
 
-## Support or Anything
+---
 
-Reach me out on email razifrizqullah@gmail.com
+## 💬 Support & Contact
+
+If you have any questions, feedback, or need support, feel free to reach out:
+
+📧 **Email:** [My Email](mailto:razifrizqullah@gmail.com)  
+🌐 **GitHub Issues:** [Submit an Issue](https://github.com/rizquuula/pyvectordb/issues)  
+💼 **LinkedIn:** [LinkedIn Profile](https://www.linkedin.com/in/razifrizqullah/)  
+
+---
+
+### 🙏 Support the Project
+If you find this project helpful, consider supporting it by:
+- ⭐ Starring this repository  
+- 🍴 Forking the project and contributing  
+- 🗨 Sharing your feedback or feature requests  
+
+Every contribution helps make the project better!
