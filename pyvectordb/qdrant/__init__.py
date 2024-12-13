@@ -65,12 +65,13 @@ class QdrantDB(VectorDB):
         elif distance_function == DistanceFunction.MANHATTAN: 
             distance_func = Distance.MANHATTAN
         else:
-            raise ValueError(f"distance function unavailable on qdrant: {[
+            d_ = [
                 "COSINE",
                 "EUCLIDEAN",
                 "DOT",
                 "MANHATTAN",
-            ]}")
+            ]
+            raise ValueError(f"distance function unavailable on qdrant: {d_}")
         
         return distance_func
 

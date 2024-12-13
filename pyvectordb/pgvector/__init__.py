@@ -202,14 +202,15 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
         elif distance_function==DistanceFunction.JACCARD:
             return self.__vector_orm.embedding.jaccard_distance
         else:
-            raise ValueError(f"distance function unavailable on pgvector: : {[
+            d_ = [
                 'L2',
                 'MAX_INNER_PRODUCT',
                 'COSINE',
                 'L1',
                 'HAMMING',
                 'JACCARD',
-            ]}")
+            ]
+            raise ValueError(f"distance function unavailable on pgvector: : {d_}")
         
     def __read_vector_orm(self, id: int) -> VectorORM | None:
         v = self.conn.execute(
