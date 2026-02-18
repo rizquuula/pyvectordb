@@ -83,16 +83,13 @@ jobs:
       - name: Post review comment
         uses: actions/github-script@v7
         if: steps.openrouter.outputs.review
+        env:
+          REVIEW_CONTENT: ${{ steps.openrouter.outputs.review }}
         with:
           github-token: ${{ github.token }}
           script: |
-            const review = `${{ steps.openrouter.outputs.review }}`;
-            
-            // Check if it's an error message
-            if (review.includes('⚠️ Code review failed')) {
-              console.log('Review failed, posting error message');
-            }
-            
+            const review = process.env.REVIEW_CONTENT;
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
