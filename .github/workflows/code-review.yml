@@ -2,58 +2,49 @@ name: AI Code Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [main]
+  pull_request_review:
 
 jobs:
-  code-review:
+  review:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
-      - name: Get PR diff
+      - name: Get diff
         id: diff
         run: |
           # Get the diff between the base and head of the PR
-          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- '*.py')
           
           # Truncate if too long (OpenRouter has token limits)
           if [ ${#DIFF} -gt 40000 ]; then
             DIFF="${DIFF:0:40000}"
-            DIFF="$DIFF\n\n... (truncated due to length)"
+            echo "diff_truncated=true" >> $GITHUB_OUTPUT
+          else
+            echo "diff_truncated=false" >> $GITHUB_OUTPUT
           fi
           
-          echo "diff<<EOF" >> $GITHUB_OUTPUT
-          echo "$DIFF" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Get PR details
-        id: pr-details
-        run: |
-          echo "title<<EOF" >> $GITHUB_OUTPUT
-          echo "${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Escape for JSON
+          DIFF="${DIFF//'%'/'%25'}"
+          DIFF="${DIFF//$'\n'/'%0A'}"
+          DIFF="${DIFF//$'\r'/'%0D'}"
           
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo "${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "diff=$DIFF" >> $GITHUB_OUTPUT
 
       - name: Call OpenRouter API
         id: openrouter
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
-            -H "HTTP-Referer: https://github.com/${{ github.repository }}" \
-            -H "X-Title: ${{ github.repository }}" \
+            -H "Authorization: $OPENROUTER_API_KEY" \
+            -H "HTTP-Referer: https://github.com/rizquuula/pyvectordb" \
+            -H "X-Title: rizquuula/pyvectordb" \
             -d '{
               "model": "minimax/minimax-m2.5",
               "messages": [
@@ -63,7 +54,7 @@ jobs:
                 },
                 {
                   "role": "user",
-                  "content": "Please review the following pull request changes for repository ${{ github.repository }}:\n\nPR Title: ${{ steps.pr-details.outputs.title }}\nPR Description: ${{ steps.pr-details.outputs.body }}\n\nChanged files diff:\n${{ steps.diff.outputs.diff }}\n\nProvide a thorough code review with specific suggestions."
+                  "content": "Please review the following pull request changes for repository rizquuula/pyvectordb:\n\nPR Title: ${{ github.event.pull_request.title }}\nPR Description: ${{ github.event.pull_request.body }}\n\nChanged files diff:\n${{ steps.diff.outputs.diff }}"
                 }
               ],
               "max_tokens": 2000
@@ -83,11 +74,24 @@ jobs:
             echo "$MESSAGE" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           fi
+        shell: /usr/bin/bash
 
       - name: Post review comment
+        uses: actions/github-script@v7
         if: steps.openrouter.outputs.review
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REVIEW: ${{ steps.openrouter.outputs.review }}
-        run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body "$REVIEW"
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const review = `${{ steps.openrouter.outputs.review }}`;
+            
+            // Check if it's an error message
+            if (review.includes('⚠️ Code review failed')) {
+              console.log('Review failed, posting error message');
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: review
+            });
