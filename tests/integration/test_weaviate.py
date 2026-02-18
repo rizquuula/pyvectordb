@@ -3,24 +3,25 @@ import os
 from dotenv import load_dotenv
 
 from pyvectordb import Vector
-from pyvectordb.chromadb import ChromaDB
 from pyvectordb.distance_function import DistanceFunction
+from pyvectordb.weaviate import WeaviateDB
 
 load_dotenv()
 
 
 def test_integration():
-    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
     v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
     v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
-    vector_db = ChromaDB(
-        host=os.getenv("CH_HOST"),
-        port=os.getenv("CH_PORT"),
-        auth_provider=os.getenv("CH_AUTH_PROVIDER"),
-        auth_credentials=os.getenv("CH_AUTH_CREDENTIALS"),
-        collection_name=os.getenv("CH_COLLECTION_NAME"),
-        distance_function=DistanceFunction.L2,
+    vector_db = WeaviateDB(
+        host=os.getenv("WEAVIATE_HOST", "localhost"),
+        port=int(os.getenv("WEAVIATE_PORT", 8080)),
+        grpc_port=int(os.getenv("WEAVIATE_GRPC_PORT", 50051)),
+        api_key=os.getenv("WEAVIATE_API_KEY"),
+        collection=os.getenv("WEAVIATE_COLLECTION"),
+        vector_size=int(os.getenv("WEAVIATE_VECTOR_SIZE")),
+        distance_function=DistanceFunction.COSINE,
     )
 
     # insert new vector

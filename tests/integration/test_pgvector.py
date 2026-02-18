@@ -1,24 +1,18 @@
+import os
+
 from dotenv import load_dotenv
+
+from pyvectordb import Vector
+from pyvectordb.distance_function import DistanceFunction
+from pyvectordb.pgvector import PgvectorDB
+
 load_dotenv()
 
-import os
-from pyvectordb import Vector
-from pyvectordb.pgvector import PgvectorDB
-from pyvectordb.distance_function import DistanceFunction
 
 def test_integration():
-    v1 = Vector(
-        embedding=[2., 2., 1.],
-        metadata={"text": "hellow from pyvectordb"}
-    )
-    v2 = Vector(
-        embedding=[2., 2., 2.],
-        metadata={"text": "hi"}
-    )
-    v3 = Vector(
-        embedding=[2., 2., 3.],
-        metadata={"text": "good morning!"}
-    )
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+    v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
+    v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
     vector_db = PgvectorDB(
         user=os.getenv("PG_USER"),
@@ -38,7 +32,7 @@ def test_integration():
     v_from_db = vector_db.read_vector(v1.get_id())
 
     # update v1 embedding
-    new_embedding = [2., 2., 4.]
+    new_embedding = [2.0, 2.0, 4.0]
     v_from_db.embedding = new_embedding
     vector_db.update_vector(v_from_db)
 

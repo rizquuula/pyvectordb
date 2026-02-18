@@ -4,21 +4,24 @@ from dotenv import load_dotenv
 
 from pyvectordb import Vector
 from pyvectordb.distance_function import DistanceFunction
-from pyvectordb.qdrant import QdrantDB
+from pyvectordb.weaviate import WeaviateDB
 
 load_dotenv()
 
-v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
 v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
 v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
-vector_db = QdrantDB(
-    host=os.getenv("Q_HOST"),
-    api_key=os.getenv("Q_API_KEY"),
-    port=os.getenv("Q_PORT"),
-    collection=os.getenv("Q_COLLECTION"),
-    vector_size=int(os.getenv("Q_VECTOR_SIZE")),
-    distance_function=DistanceFunction.EUCLIDEAN,
+# Initialize WeaviateDB
+# Option 1: Connect to local Weaviate instance
+vector_db = WeaviateDB(
+    host=os.getenv("WEAVIATE_HOST", "localhost"),
+    port=int(os.getenv("WEAVIATE_PORT", 8080)),
+    grpc_port=int(os.getenv("WEAVIATE_GRPC_PORT", 50051)),
+    api_key=os.getenv("WEAVIATE_API_KEY"),
+    collection=os.getenv("WEAVIATE_COLLECTION"),
+    vector_size=int(os.getenv("WEAVIATE_VECTOR_SIZE")),
+    distance_function=DistanceFunction.COSINE,
 )
 
 # insert new vector

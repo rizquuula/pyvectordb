@@ -4,21 +4,20 @@ from dotenv import load_dotenv
 
 from pyvectordb import Vector
 from pyvectordb.distance_function import DistanceFunction
-from pyvectordb.qdrant import QdrantDB
+from pyvectordb.milvus import MilvusDB
 
 load_dotenv()
 
-v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
 v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
 v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
-vector_db = QdrantDB(
-    host=os.getenv("Q_HOST"),
-    api_key=os.getenv("Q_API_KEY"),
-    port=os.getenv("Q_PORT"),
-    collection=os.getenv("Q_COLLECTION"),
-    vector_size=int(os.getenv("Q_VECTOR_SIZE")),
-    distance_function=DistanceFunction.EUCLIDEAN,
+vector_db = MilvusDB(
+    host=os.getenv("MILVUS_HOST"),
+    port=int(os.getenv("MILVUS_PORT", 19530)),
+    collection=os.getenv("MILVUS_COLLECTION"),
+    vector_size=int(os.getenv("MILVUS_VECTOR_SIZE")),
+    distance_function=DistanceFunction.COSINE,
 )
 
 # insert new vector

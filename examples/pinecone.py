@@ -4,21 +4,35 @@ from dotenv import load_dotenv
 
 from pyvectordb import Vector
 from pyvectordb.distance_function import DistanceFunction
-from pyvectordb.qdrant import QdrantDB
+from pyvectordb.pinecone import PineconeDB
 
 load_dotenv()
 
-v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
 v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
 v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
-vector_db = QdrantDB(
-    host=os.getenv("Q_HOST"),
-    api_key=os.getenv("Q_API_KEY"),
-    port=os.getenv("Q_PORT"),
-    collection=os.getenv("Q_COLLECTION"),
-    vector_size=int(os.getenv("Q_VECTOR_SIZE")),
-    distance_function=DistanceFunction.EUCLIDEAN,
+# Initialize PineconeDB
+# Option 1: Connect to existing index using host
+# vector_db = PineconeDB(
+#     api_key=os.getenv("PINECONE_API_KEY"),
+#     host=os.getenv("PINECONE_HOST"),
+# )
+
+# Option 2: Connect to existing index using index name
+# vector_db = PineconeDB(
+#     api_key=os.getenv("PINECONE_API_KEY"),
+#     index_name=os.getenv("PINECONE_INDEX_NAME"),
+# )
+
+# Option 3: Create new index (requires dimension)
+vector_db = PineconeDB(
+    api_key=os.getenv("PINECONE_API_KEY"),
+    index_name=os.getenv("PINECONE_INDEX_NAME"),
+    dimension=3,  # Must match your embedding dimension
+    cloud="aws",
+    region="us-east-1",
+    distance_function=DistanceFunction.COSINE,
 )
 
 # insert new vector

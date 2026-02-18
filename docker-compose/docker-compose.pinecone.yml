@@ -1,0 +1,25 @@
+# Pinecone is a managed cloud vector database service.
+# There is no local docker container to run.
+#
+# To use Pinecone with pyvectordb, you need:
+# 1. A Pinecone account (https://www.pinecone.io/)
+# 2. An API key from your Pinecone dashboard
+# 3. Create an index or let pyvectordb create one for you
+#
+# Environment variables to set in your .env file:
+# PINECONE_API_KEY=your_api_key_here
+# PINECONE_INDEX_NAME=your_index_name
+# PINECONE_HOST=your_index_host (optional, can be inferred from index_name)
+#
+# Example usage:
+# from pyvectordb.pinecone import PineconeDB
+# from pyvectordb.distance_function import DistanceFunction
+#
+# vector_db = PineconeDB(
+#     api_key="your_api_key",
+#     index_name="my-index",
+#     dimension=1536,  # Required to create new index
+#     distance_function=DistanceFunction.COSINE,
+# )
+#
+# For more details, see: https://docs.pinecone.io/

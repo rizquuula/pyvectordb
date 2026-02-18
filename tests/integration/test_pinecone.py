@@ -3,24 +3,21 @@ import os
 from dotenv import load_dotenv
 
 from pyvectordb import Vector
-from pyvectordb.chromadb import ChromaDB
 from pyvectordb.distance_function import DistanceFunction
+from pyvectordb.pinecone import PineconeDB
 
 load_dotenv()
 
 
 def test_integration():
-    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hellow from pyvectordb"})
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
     v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
     v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
-    vector_db = ChromaDB(
-        host=os.getenv("CH_HOST"),
-        port=os.getenv("CH_PORT"),
-        auth_provider=os.getenv("CH_AUTH_PROVIDER"),
-        auth_credentials=os.getenv("CH_AUTH_CREDENTIALS"),
-        collection_name=os.getenv("CH_COLLECTION_NAME"),
-        distance_function=DistanceFunction.L2,
+    # Initialize PineconeDB - connect to existing index
+    vector_db = PineconeDB(
+        api_key=os.getenv("PINECONE_API_KEY"),
+        host=os.getenv("PINECONE_HOST"),
     )
 
     # insert new vector
@@ -49,3 +46,29 @@ def test_integration():
 
     vector_db.delete_vector(v1.get_id())
     vector_db.delete_vectors([v2, v3])
+
+
+def test_integration_with_index_creation():
+    """Test that creates a new index (requires dimension)"""
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
+
+    # Initialize PineconeDB with dimension to create new index
+    vector_db = PineconeDB(
+        api_key=os.getenv("PINECONE_API_KEY"),
+        index_name=os.getenv("PINECONE_INDEX_NAME"),
+        dimension=3,  # Must match embedding dimension
+        cloud="aws",
+        region="us-east-1",
+        distance_function=DistanceFunction.COSINE,
+    )
+
+    # insert new vector
+    vector_db.insert_vector(v1)
+
+    # read v1
+    v_from_db = vector_db.read_vector(v1.get_id())
+    assert v_from_db is not None
+    assert list(v_from_db.embedding) == list(v1.embedding)
+
+    # cleanup
+    vector_db.delete_vector(v1.get_id())
