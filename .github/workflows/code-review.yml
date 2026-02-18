@@ -23,7 +23,7 @@ jobs:
         id: diff
         run: |
           # Get the diff between the base and head of the PR
-          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- '*.py')
+          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           
           # Truncate if too long (OpenRouter has token limits)
           if [ ${#DIFF} -gt 40000 ]; then
