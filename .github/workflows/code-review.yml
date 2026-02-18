@@ -87,6 +87,7 @@ jobs:
       - name: Post review comment
         if: steps.openrouter.outputs.review
         env:
+          GH_TOKEN: ${{ github.token }}
           REVIEW: ${{ steps.openrouter.outputs.review }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} --body "$REVIEW"
