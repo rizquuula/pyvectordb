@@ -1,25 +1,18 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 import os
+
+from dotenv import load_dotenv
+
 from pyvectordb import Vector
-from pyvectordb.pinecone import PineconeDB
 from pyvectordb.distance_function import DistanceFunction
+from pyvectordb.pinecone import PineconeDB
+
+load_dotenv()
 
 
 def test_integration():
-    v1 = Vector(
-        embedding=[2., 2., 1.],
-        metadata={"text": "hello from pyvectordb"}
-    )
-    v2 = Vector(
-        embedding=[2., 2., 2.],
-        metadata={"text": "hi"}
-    )
-    v3 = Vector(
-        embedding=[2., 2., 3.],
-        metadata={"text": "good morning!"}
-    )
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
+    v2 = Vector(embedding=[2.0, 2.0, 2.0], metadata={"text": "hi"})
+    v3 = Vector(embedding=[2.0, 2.0, 3.0], metadata={"text": "good morning!"})
 
     # Initialize PineconeDB - connect to existing index
     vector_db = PineconeDB(
@@ -35,7 +28,7 @@ def test_integration():
     v_from_db = vector_db.read_vector(v1.get_id())
 
     # update v1 embedding
-    new_embedding = [2., 2., 4.]
+    new_embedding = [2.0, 2.0, 4.0]
     v_from_db.embedding = new_embedding
     vector_db.update_vector(v_from_db)
 
@@ -57,10 +50,7 @@ def test_integration():
 
 def test_integration_with_index_creation():
     """Test that creates a new index (requires dimension)"""
-    v1 = Vector(
-        embedding=[2., 2., 1.],
-        metadata={"text": "hello from pyvectordb"}
-    )
+    v1 = Vector(embedding=[2.0, 2.0, 1.0], metadata={"text": "hello from pyvectordb"})
 
     # Initialize PineconeDB with dimension to create new index
     vector_db = PineconeDB(
