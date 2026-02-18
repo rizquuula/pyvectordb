@@ -45,6 +45,10 @@ pip install pyvectordb[chromadb]
 pip install pyvectordb[milvus]
 ```
 
+```sh
+pip install pyvectordb[weaviate]
+```
+
 ### Usage examples 
 
 #### 1. PGVector
@@ -159,6 +163,24 @@ vector_db = MilvusDB(
     port=int(os.getenv("MILVUS_PORT", 19530)),
     collection=os.getenv("MILVUS_COLLECTION"),
     vector_size=int(os.getenv("MILVUS_VECTOR_SIZE")),
+    distance_function=DistanceFunction.COSINE,
+)
+```
+
+#### 5. Weaviate
+
+Weaviate is an open-source, cloud-native vector database that stores data objects and vector embeddings, enabling efficient similarity search. It supports semantic search, hybrid search, and RAG (Retrieval Augmented Generation) workflows.
+
+```py
+from pyvectordb import WeaviateDB
+
+vector_db = WeaviateDB(
+    host=os.getenv("WEAVIATE_HOST", "localhost"),
+    port=int(os.getenv("WEAVIATE_PORT", 8080)),
+    grpc_port=int(os.getenv("WEAVIATE_GRPC_PORT", 50051)),
+    api_key=os.getenv("WEAVIATE_API_KEY"),
+    collection=os.getenv("WEAVIATE_COLLECTION"),
+    vector_size=int(os.getenv("WEAVIATE_VECTOR_SIZE")),
     distance_function=DistanceFunction.COSINE,
 )
 ```
