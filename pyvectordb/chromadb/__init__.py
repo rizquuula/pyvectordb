@@ -16,9 +16,9 @@ class ChromaDB(VectorDB):
         self, 
         host: str, 
         port: str,
-        auth_provider: str,
-        auth_credentials: str,
-        collection_name: str,
+        auth_provider: str=None,
+        auth_credentials: str=None,
+        collection_name: str=None,
         distance_function: DistanceFunction | str=DistanceFunction.L2,
         debug: bool=False
     ) -> None:
@@ -26,8 +26,8 @@ class ChromaDB(VectorDB):
         
         self.host = host or self.__raise_value_error("host")
         self.port = port or self.__raise_value_error("port")
-        self.auth_provider = auth_provider or self.__raise_value_error("auth_provider")
-        self.auth_credentials = auth_credentials or self.__raise_value_error("auth_credentials")
+        self.auth_provider = auth_provider
+        self.auth_credentials = auth_credentials
         self.collection_name = collection_name or self.__raise_value_error("collection_name")
         self.distance_function = distance_function or self.__raise_value_error("distance_function")
         
@@ -44,15 +44,20 @@ class ChromaDB(VectorDB):
     
     def __init_client(self) -> None:
         if self.client is None:
+            # ChromaDB v1.x API - using HttpClient with settings
+            settings = Settings(
+                anonymized_telemetry=False,
+                allow_reset=True,
+            )
+            
+            if self.auth_provider and self.auth_credentials:
+                settings.chroma_client_auth_provider = self.auth_provider
+                settings.chroma_client_auth_credentials = self.auth_credentials
+            
             self.client = chromadb.HttpClient(
                 host=self.host,
                 port=self.port,
-                ssl=False,
-                headers={"X-Chroma-Token": self.auth_credentials},
-                settings=Settings(
-                    chroma_client_auth_provider=self.auth_provider,
-                    chroma_client_auth_credentials=self.auth_credentials,
-                )
+                settings=settings,
             )
     
     def __health_check(self) -> None:

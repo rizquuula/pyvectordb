@@ -46,10 +46,14 @@ class PgvectorDB(VectorDB):
     
     def __init_engine(self) -> None:
         if self.__engine == None:
+            # pgvector 0.4.x with SQLAlchemy 2.0
             self.__engine = create_engine(
                 f'postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}', 
-                echo=True,
-                connect_args={}
+                echo=False,
+                pool_pre_ping=True,
+                connect_args={
+                    "options": "-c search_path=public"
+                }
             )
     
     def __get_db_session(self) -> Generator[Session, None, None]:
@@ -104,7 +108,7 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
         self.conn.add_all(v_orms)
         self.conn.commit()
         
-    def read_vector(self, id: int) -> Vector | None:
+    def read_vector(self, id: str) -> Vector | None:
         v_orm = self.__read_vector_orm(id)
         
         if v_orm is None: 
@@ -142,7 +146,7 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
         self.conn.add_all(v_orms)
         self.conn.commit()
 
-    def delete_vector(self, id: int) -> None:
+    def delete_vector(self, id: str) -> None:
         v = self.__read_vector_orm(id)
         self.conn.delete(v)
         self.conn.commit()
@@ -212,7 +216,7 @@ CREATE TABLE IF NOT EXISTS {self.collection} (
             ]
             raise ValueError(f"distance function unavailable on pgvector: : {d_}")
         
-    def __read_vector_orm(self, id: int) -> VectorORM | None:
+    def __read_vector_orm(self, id: str) -> VectorORM | None:
         v = self.conn.execute(
             select(self.__vector_orm)
             .where(self.__vector_orm.id == id)

@@ -14,16 +14,16 @@ class QdrantDB(VectorDB):
     def __init__(
         self, 
         host: str, 
-        api_key: str, 
-        port: int, 
-        collection: str,
-        vector_size: int,
+        api_key: str=None, 
+        port: int=6333, 
+        collection: str=None,
+        vector_size: int=None,
         distance_function: DistanceFunction | str=DistanceFunction.EUCLIDEAN,
     ) -> None:
         super().__init__(host, port)
         
         self.host = host or self.__raise_value_error("host")
-        self.api_key = api_key or self.__raise_value_error("api_key")
+        self.api_key = api_key
         self.port = port or self.__raise_value_error("port")
         self.collection = collection or self.__raise_value_error("collection")
         self.vector_size = vector_size or self.__raise_value_error("vector_size")
@@ -40,7 +40,14 @@ class QdrantDB(VectorDB):
     
     def __init__client(self) -> None:
         if self.client is None:
-            self.client = QdrantClient(host=self.host, port=self.port, api_key=self.api_key, https=False)
+            # Qdrant client v1.16.x API
+            self.client = QdrantClient(
+                host=self.host, 
+                port=self.port, 
+                api_key=self.api_key, 
+                https=False,
+                timeout=10,
+            )
     
     def __init_collection(self) -> None:
         if not self.client.collection_exists(self.collection):
@@ -108,7 +115,7 @@ class QdrantDB(VectorDB):
             wait=False
         )
         
-    def read_vector(self, id: int) -> Vector | None:
+    def read_vector(self, id: str) -> Vector | None:
         records = self.client.retrieve(
             collection_name=self.collection,
             ids=[id],
@@ -133,7 +140,7 @@ class QdrantDB(VectorDB):
         # we use qdrant upsert, so...
         self.insert_vectors(vectors)
         
-    def delete_vector(self, id: int) -> None:
+    def delete_vector(self, id: str) -> None:
         self.client.delete(
             collection_name=self.collection,
             points_selector=[id],
