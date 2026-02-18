@@ -47,7 +47,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -H "Authorization: $OPENROUTER_API_KEY" \
+            -H "Authorization: Bearer $OPENROUTER_API_KEY" \
             -H "HTTP-Referer: https://github.com/rizquuula/pyvectordb" \
             -H "X-Title: rizquuula/pyvectordb" \
             -d '{
