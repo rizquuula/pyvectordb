@@ -41,6 +41,10 @@ pip install pyvectordb[qdrant]
 pip install pyvectordb[chromadb]
 ```
 
+```sh
+pip install pyvectordb[milvus]
+```
+
 ### Usage examples 
 
 #### 1. PGVector
@@ -140,6 +144,22 @@ vector_db = ChromaDB(
     auth_credentials=os.getenv("CH_AUTH_CREDENTIALS"),
     collection_name=os.getenv("CH_COLLECTION_NAME"),
     distance_function=DistanceFunction.L2,
+)
+```
+
+#### 4. Milvus
+
+Milvus is an open-source vector database designed for efficient similarity search and AI applications. It provides high-performance vector storage and retrieval with support for various distance metrics.
+
+```py
+from pyvectordb import MilvusDB
+
+vector_db = MilvusDB(
+    host=os.getenv("MILVUS_HOST"),
+    port=int(os.getenv("MILVUS_PORT", 19530)),
+    collection=os.getenv("MILVUS_COLLECTION"),
+    vector_size=int(os.getenv("MILVUS_VECTOR_SIZE")),
+    distance_function=DistanceFunction.COSINE,
 )
 ```
 
