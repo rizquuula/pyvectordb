@@ -177,3 +177,5 @@ If you find this project helpful, consider supporting it by:
 - 🗨 Sharing your feedback or feature requests  
 
 Every contribution helps make the project better!
+
+Thank you!
