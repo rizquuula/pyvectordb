@@ -44,26 +44,25 @@ jobs:
         id: openrouter
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_DIFF: ${{ steps.diff.outputs.diff }}
         run: |
+          SYSTEM_MSG="You are an expert code reviewer. Your task is to review pull request changes and provide constructive feedback. Focus on:\n\n1. Potential bugs and security issues\n2. Code quality and best practices (Python)\n3. Performance concerns\n4. Missing error handling\n5. Code readability and maintainability\n6. Test coverage\n\nProvide concise, specific, and actionable feedback. Be polite and professional."
+          USER_MSG="Please review the following pull request changes for repository rizquuula/pyvectordb:\n\nPR Title: ${PR_TITLE}\nPR Description: ${PR_BODY}\n\nChanged files diff:\n${PR_DIFF}"
+
+          PAYLOAD=$(jq -n \
+            --arg model "minimax/minimax-m2.5" \
+            --arg system "$SYSTEM_MSG" \
+            --arg user "$USER_MSG" \
+            '{model: $model, messages: [{role: "system", content: $system}, {role: "user", content: $user}], max_tokens: 2000}')
+
           RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $OPENROUTER_API_KEY" \
             -H "HTTP-Referer: https://github.com/rizquuula/pyvectordb" \
             -H "X-Title: rizquuula/pyvectordb" \
-            -d '{
-              "model": "minimax/minimax-m2.5",
-              "messages": [
-                {
-                  "role": "system",
-                  "content": "You are an expert code reviewer. Your task is to review pull request changes and provide constructive feedback. Focus on:\n\n1. Potential bugs and security issues\n2. Code quality and best practices (Python)\n3. Performance concerns\n4. Missing error handling\n5. Code readability and maintainability\n6. Test coverage\n\nProvide concise, specific, and actionable feedback. Be polite and professional."
-                },
-                {
-                  "role": "user",
-                  "content": "Please review the following pull request changes for repository rizquuula/pyvectordb:\n\nPR Title: ${{ github.event.pull_request.title }}\nPR Description: ${{ github.event.pull_request.body }}\n\nChanged files diff:\n${{ steps.diff.outputs.diff }}"
-                }
-              ],
-              "max_tokens": 2000
-            }')
+            -d "$PAYLOAD")
           
           # Extract the response content
           MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content // empty')
