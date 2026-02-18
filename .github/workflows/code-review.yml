@@ -22,23 +22,17 @@ jobs:
       - name: Get diff
         id: diff
         run: |
-          # Get the diff between the base and head of the PR
-          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
-          
+          # Only diff Python files to reduce noise and token usage
+          DIFF=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- '*.py')
+
           # Truncate if too long (OpenRouter has token limits)
           if [ ${#DIFF} -gt 40000 ]; then
             DIFF="${DIFF:0:40000}"
-            echo "diff_truncated=true" >> $GITHUB_OUTPUT
-          else
-            echo "diff_truncated=false" >> $GITHUB_OUTPUT
           fi
-          
-          # Escape for JSON
-          DIFF="${DIFF//'%'/'%25'}"
-          DIFF="${DIFF//$'\n'/'%0A'}"
-          DIFF="${DIFF//$'\r'/'%0D'}"
-          
-          echo "diff=$DIFF" >> $GITHUB_OUTPUT
+
+          echo "diff<<EOF" >> $GITHUB_OUTPUT
+          echo "$DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Call OpenRouter API
         id: openrouter
