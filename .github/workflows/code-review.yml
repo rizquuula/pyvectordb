@@ -74,7 +74,7 @@ jobs:
             echo "$MESSAGE" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           fi
-        shell: /usr/bin/bash
+        shell: bash
 
       - name: Post review comment
         uses: actions/github-script@v7
