@@ -1,59 +1,53 @@
 # PyVectorDB
 
-Born to be simple. **Simple** Python wrapper provides efficient support for CRUD operations and querying with vector databases.".
-
-[![GitHub license](https://img.shields.io/github/license/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/network)
-![GitHub watchers](https://img.shields.io/github/watchers/rizquuula/pyvectordb)
-[![GitHub issues](https://img.shields.io/github/issues/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/pulls)
+[![PyPI Version](https://img.shields.io/pypi/v/pyvectordb)](https://pypi.org/project/pyvectordb/)
+[![Python Version](https://img.shields.io/pypi/python-version/pyvectordb)](https://pypi.org/project/pyvectordb/)
+[![Tests](https://github.com/rizquuula/pyvectordb/actions/workflows/test.yml/badge.svg)](https://github.com/rizquuula/pyvectordb/actions)
+[![License](https://img.shields.io/github/license/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/blob/main/LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/graphs/contributors)
-![GitHub last commit](https://img.shields.io/github/last-commit/rizquuula/pyvectordb)
-![Commit activity](https://img.shields.io/github/commit-activity/y/rizquuula/pyvectordb)
-[![GitHub repo size](https://img.shields.io/github/repo-size/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
-[![GitHub languages](https://img.shields.io/github/languages/top/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
-[![GitHub languages count](https://img.shields.io/github/languages/count/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
 
----
+**Simple** Python wrapper for CRUD operations and vector similarity search across multiple vector databases.
 
-## 🚀 Getting Started
+## Features
 
-### Installation 
+- 🚀 **Unified API** - Single interface for multiple vector databases
+- 🔄 **Multi-database support** - PGVector, Qdrant, ChromaDB, Milvus, Weaviate, Pinecone
+- 📦 **Lightweight** - Install only the dependencies you need
+- 🛠️ **Full CRUD** - Insert, read, update, delete, and similarity search
 
-To install all vector database support depedencies _(require a lot of disk space, not recommended)_
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Supported Databases](#supported-databases)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Requirements
+
+- Python 3.9+
+
+## Installation
+
+### Install all dependencies (not recommended - requires a lot of disk space)
 
 ```sh
 pip install pyvectordb[all]
 ```
 
-if you only need a specific vector database engine, you can use **(recommended)**
+### Install specific database support (recommended)
 
 ```sh
-pip install pyvectordb[pgvector]
+pip install pyvectordb[pgvector]   # PostgreSQL with pgvector
+pip install pyvectordb[qdrant]     # Qdrant
+pip install pyvectordb[chromadb]   # ChromaDB
+pip install pyvectordb[milvus]     # Milvus
+pip install pyvectordb[weaviate]   # Weaviate
+pip install pyvectordb[pinecone]   # Pinecone
 ```
 
-```sh
-pip install pyvectordb[qdrant]
-```
-
-```sh
-pip install pyvectordb[chromadb]
-```
-
-```sh
-pip install pyvectordb[milvus]
-```
-
-```sh
-pip install pyvectordb[weaviate]
-```
-
-### Usage examples 
-
-#### 1. PGVector
-
-PGvector is an extension for PostgreSQL that allows the storage, indexing, and querying of vector embeddings. It is designed to support vector similarity search, which is useful in machine learning applications like natural language processing, image recognition, and recommendation systems. By storing vector embeddings as a data type, PGvector enables efficient similarity searches using distance metrics such as cosine similarity, Euclidean distance, inner product, etc.
+## Quick Start
 
 ```py
 from dotenv import load_dotenv
@@ -64,19 +58,17 @@ from pyvectordb import Vector
 from pyvectordb.pgvector.pgvector import PgvectorDB
 from pyvectordb.distance_function import DistanceFunction
 
+# Create vectors with embeddings and metadata
 v1 = Vector(
     embedding=[2., 2., 1.],
-    metadata={"text": "hellow from pyvectordb"}
+    metadata={"text": "hello from pyvectordb"}
 )
 v2 = Vector(
     embedding=[2., 2., 2.],
     metadata={"text": "hi"}
 )
-v3 = Vector(
-    embedding=[2., 2., 3.],
-    metadata={"text": "good morning!"}
-)
 
+# Initialize database connection
 vector_db = PgvectorDB(
     user=os.getenv("PG_USER"),
     password=os.getenv("PG_PASSWORD"),
@@ -87,137 +79,191 @@ vector_db = PgvectorDB(
     distance_function=DistanceFunction.L2,
 )
 
-# insert new vector
+# CRUD operations
 vector_db.insert_vector(v1)
-vector_db.insert_vectors([v2, v3])
+vector_db.insert_vectors([v2])
 
-# read v1
+# Read
 v_from_db = vector_db.read_vector(v1.get_id())
 
-# update v1 embedding
-new_embedding = [2., 2., 4.]
-v_from_db.embedding = new_embedding
+# Update
+v_from_db.embedding = [2., 2., 4.]
 vector_db.update_vector(v_from_db)
 
-# read updated embedding and check
-v_from_db_updated = vector_db.read_vector(v1.get_id())
-assert list(v_from_db_updated.embedding) == list(new_embedding), "updated embedding not equal"
-
-# re-update v1 embedding to the v1, check
-vector_db.update_vectors([v1, v2, v3])
-re_updated_embedding = vector_db.read_vector(v1.get_id()).embedding
-assert list(re_updated_embedding) == list(v1.embedding), "re-updated embedding not equal"
-
-for x in vector_db.get_neighbor_vectors(v1, 3):
-    print(f"{x}")
-
+# Delete
 vector_db.delete_vector(v1.get_id())
-vector_db.delete_vectors([v2, v3])
+
+# Similarity search
+neighbors = vector_db.get_neighbor_vectors(v1, k=3)
 ```
 
-#### 2. Qdrant
+## Supported Databases
 
-Qdrant “is a vector similarity search engine that provides a production-ready service with a convenient API to store, search, and manage points (i.e. vectors) with an additional payload.” You can think of the payloads as additional pieces of information that can help you hone in on your search and also receive useful information that you can give to your users.
+| Database | Install Extra | Description |
+|----------|---------------|-------------|
+| [PGVector](https://github.com/pgvector/pgvector) | `[pgvector]` | PostgreSQL vector extension |
+| [Qdrant](https://qdrant.tech/) | `[qdrant]` | Vector similarity search engine |
+| [ChromaDB](https://www.trychroma.com/) | `[chromadb]` | AI-native open-source vector database |
+| [Milvus](https://milvus.io/) | `[milvus]` | Open-source vector database |
+| [Weaviate](https://weaviate.io/) | `[weaviate]` | Cloud-native vector database |
+| [Pinecone](https://www.pinecone.io/) | `[pinecone]` | Managed vector database |
 
-Using Qdrant in pyvectordb is simple, you only need to change the client to `QdrantDB`
+### Database-Specific Usage
 
-```py
-from pyvectordb import QdrantDB
-
-vector_db = QdrantDB(
-    host=os.getenv("Q_HOST"),
-    api_key=os.getenv("Q_API_KEY"),
-    port=os.getenv("Q_PORT"),
-    collection=os.getenv("Q_COLLECTION"),
-    vector_size=int(os.getenv("Q_SIZE")),
-    distance_function=DistanceFunction.COSINE,
-)
-```
-
-#### 3. Chroma DB
-
-Chroma is the AI-native open-source vector database. Chroma makes it easy to build LLM apps by making knowledge, facts, and skills pluggable for LLMs.
+<details>
+<summary>PGVector</summary>
 
 ```py
-from pyvectordb import ChromaDB
+from pyvectordb.pgvector.pgvector import PgvectorDB
+from pyvectordb.distance_function import DistanceFunction
 
-vector_db = ChromaDB(
-    host=os.getenv("CH_HOST"),
-    port=os.getenv("CH_PORT"),
-    auth_provider=os.getenv("CH_AUTH_PROVIDER"),
-    auth_credentials=os.getenv("CH_AUTH_CREDENTIALS"),
-    collection_name=os.getenv("CH_COLLECTION_NAME"),
+db = PgvectorDB(
+    user="postgres",
+    password="password",
+    host="localhost",
+    port=5432,
+    db_name="vectordb",
+    collection="my_collection",
     distance_function=DistanceFunction.L2,
 )
 ```
+</details>
 
-#### 4. Milvus
+<details>
+<summary>Qdrant</summary>
 
-Milvus is an open-source vector database designed for efficient similarity search and AI applications. It provides high-performance vector storage and retrieval with support for various distance metrics.
+```py
+from pyvectordb import QdrantDB
+from pyvectordb.distance_function import DistanceFunction
+
+db = QdrantDB(
+    host="localhost",
+    api_key="your-api-key",
+    port=6333,
+    collection="my_collection",
+    vector_size=1536,
+    distance_function=DistanceFunction.COSINE,
+)
+```
+</details>
+
+<details>
+<summary>ChromaDB</summary>
+
+```py
+from pyvectordb import ChromaDB
+from pyvectordb.distance_function import DistanceFunction
+
+db = ChromaDB(
+    host="localhost",
+    port=8000,
+    collection_name="my_collection",
+    distance_function=DistanceFunction.L2,
+)
+```
+</details>
+
+<details>
+<summary>Milvus</summary>
 
 ```py
 from pyvectordb import MilvusDB
+from pyvectordb.distance_function import DistanceFunction
 
-vector_db = MilvusDB(
-    host=os.getenv("MILVUS_HOST"),
-    port=int(os.getenv("MILVUS_PORT", 19530)),
-    collection=os.getenv("MILVUS_COLLECTION"),
-    vector_size=int(os.getenv("MILVUS_VECTOR_SIZE")),
+db = MilvusDB(
+    host="localhost",
+    port=19530,
+    collection="my_collection",
+    vector_size=1536,
     distance_function=DistanceFunction.COSINE,
 )
 ```
+</details>
 
-#### 5. Weaviate
-
-Weaviate is an open-source, cloud-native vector database that stores data objects and vector embeddings, enabling efficient similarity search. It supports semantic search, hybrid search, and RAG (Retrieval Augmented Generation) workflows.
+<details>
+<summary>Weaviate</summary>
 
 ```py
 from pyvectordb import WeaviateDB
+from pyvectordb.distance_function import DistanceFunction
 
-vector_db = WeaviateDB(
-    host=os.getenv("WEAVIATE_HOST", "localhost"),
-    port=int(os.getenv("WEAVIATE_PORT", 8080)),
-    grpc_port=int(os.getenv("WEAVIATE_GRPC_PORT", 50051)),
-    api_key=os.getenv("WEAVIATE_API_KEY"),
-    collection=os.getenv("WEAVIATE_COLLECTION"),
-    vector_size=int(os.getenv("WEAVIATE_VECTOR_SIZE")),
+db = WeaviateDB(
+    host="localhost",
+    port=8080,
+    grpc_port=50051,
+    api_key="your-api-key",
+    collection="my_collection",
+    vector_size=1536,
     distance_function=DistanceFunction.COSINE,
 )
 ```
+</details>
 
-### Available functions
-
-These are available functions in this simple tool
+<details>
+<summary>Pinecone</summary>
 
 ```py
-def insert_vector(self, vector: Vector) -> None: ...
-def insert_vectors(self, vectors: List[Vector]) -> None: ...
-def read_vector(self, id: str) -> Vector | None: ...
-def update_vector(self, vector: Vector) -> None: ...
-def update_vectors(self, vectors: List[Vector]) -> None: ...
-def delete_vector(self, id: str) -> None: ...
-def delete_vectors(self, ids: Union[List[str], List[Vector]]) -> None: ...
-def get_neighbor_vectors(self, vector: Vector, n: int) -> List[VectorDistance]: ...
+from pyvectordb import PineconeDB
+from pyvectordb.distance_function import DistanceFunction
+
+db = PineconeDB(
+    api_key="your-api-key",
+    environment="us-east-1",
+    collection="my_collection",
+    vector_size=1536,
+    distance_function=DistanceFunction.COSINE,
+)
+```
+</details>
+
+## API Reference
+
+All database implementations support the following unified interface:
+
+| Method | Description |
+|--------|-------------|
+| `insert_vector(vector)` | Insert a single vector |
+| `insert_vectors(vectors)` | Insert multiple vectors |
+| `read_vector(id)` | Get vector by ID |
+| `update_vector(vector)` | Update a single vector |
+| `update_vectors(vectors)` | Update multiple vectors |
+| `delete_vector(id)` | Delete vector by ID |
+| `delete_vectors(ids)` | Delete multiple vectors by ID |
+| `get_neighbor_vectors(vector, k)` | Find k nearest neighbors |
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/rizquuula/pyvectordb/pulls) or open an [Issue](https://github.com/rizquuula/pyvectordb/issues).
+
+### Development Setup
+
+```sh
+# Clone the repository
+git clone https://github.com/rizquuula/pyvectordb.git
+cd pyvectordb
+
+# Install development dependencies
+pip install -e ".[all]"
+
+# Run tests
+pytest tests/
 ```
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📧 **Email:** [razifrizqullah@gmail.com](mailto:razifrizqullah@gmail.com)
+- 💬 **GitHub Issues:** [Submit an Issue](https://github.com/rizquuula/pyvectordb/issues)
+- 💼 **LinkedIn:** [razifrizqullah](https://www.linkedin.com/in/razifrizqullah/)
+
 ---
 
-## 💬 Support & Contact
+If you find this project helpful, please consider:
+- ⭐ Starring the repository
+- 🍴 Forking and contributing
+- 🗨 Sharing your feedback
 
-If you have any questions, feedback, or need support, feel free to reach out:
-
-📧 **Email:** [My Email](mailto:razifrizqullah@gmail.com)  
-🌐 **GitHub Issues:** [Submit an Issue](https://github.com/rizquuula/pyvectordb/issues)  
-💼 **LinkedIn:** [LinkedIn Profile](https://www.linkedin.com/in/razifrizqullah/)  
-
----
-
-### 🙏 Support the Project
-If you find this project helpful, consider supporting it by:
-- ⭐ Starring this repository  
-- 🍴 Forking the project and contributing  
-- 🗨 Sharing your feedback or feature requests  
-
-Every contribution helps make the project better!
-
-Thank you!
+Thank you for your support!
