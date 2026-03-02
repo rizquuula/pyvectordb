@@ -1,6 +1,6 @@
 [project]
 name = "pyvectordb"
-version = "0.1.7.1"
+version = "0.1.8"
 description = "Simple Wrapper for vector database in Python with minimal support for CRUD and retrieve."
 authors = [{name = "M Razif Rizqullah", email = "razifrizqullah@gmail.com"}]
 readme = "README.md"
