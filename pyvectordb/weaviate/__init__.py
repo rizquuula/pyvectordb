@@ -185,7 +185,7 @@ class WeaviateDB(VectorDB):
         for id_ in ids:
             self.delete_vector(id_)
 
-    def get_neighbor_vectors(
+    def search(
         self,
         vector: Vector,
         n: int,

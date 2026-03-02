@@ -139,7 +139,7 @@ class QdrantDB(VectorDB):
         else:
             [self.delete_vector(id_) for id_ in ids]
 
-    def get_neighbor_vectors(
+    def search(
         self,
         vector: Vector,
         n: int,

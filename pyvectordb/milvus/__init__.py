@@ -167,7 +167,7 @@ class MilvusDB(VectorDB):
             ids=ids,
         )
 
-    def get_neighbor_vectors(
+    def search(
         self,
         vector: Vector,
         n: int,

@@ -159,7 +159,7 @@ class PineconeDB(VectorDB):
 
         self.index.delete(ids=ids)
 
-    def get_neighbor_vectors(
+    def search(
         self,
         vector: Vector,
         n: int,

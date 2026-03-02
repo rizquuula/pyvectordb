@@ -103,7 +103,7 @@ vector_db.update_vector(v_from_db)
 vector_db.delete_vector(v1.get_id())
 
 # Similarity search
-neighbors = vector_db.get_neighbor_vectors(v1, k=3)
+neighbors = vector_db.search(v1, k=3)
 ```
 
 ## Supported Databases
@@ -238,7 +238,7 @@ All database implementations support the following unified interface:
 | `update_vectors(vectors)` | Update multiple vectors |
 | `delete_vector(id)` | Delete vector by ID |
 | `delete_vectors(ids)` | Delete multiple vectors by ID |
-| `get_neighbor_vectors(vector, k)` | Find k nearest neighbors |
+| `search(vector, k)` | Find k nearest neighbors |
 
 ## Contributing
 
