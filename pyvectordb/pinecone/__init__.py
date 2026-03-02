@@ -19,7 +19,7 @@ class PineconeDB(VectorDB):
         debug: bool = False,
     ) -> None:
         # Pinecone is a managed service, so we use a dummy port for the base class
-        super().__init__(host or "pinecone.io", 443, debug)
+        super().__init__(host or "pinecone.io", 443, distance_function, debug)
 
         self.api_key = api_key or self.__raise_value_error("api_key")
         self.host = host

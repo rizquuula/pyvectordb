@@ -2,12 +2,19 @@ import logging
 import socket
 from abc import ABC, abstractmethod
 
+from .distance_function import DistanceFunction
 from .vector import Vector
 from .vector_distance import VectorDistance
 
 
 class VectorDB(ABC):
-    def __init__(self, host, port, debug: bool = False):
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        distance_function: DistanceFunction,
+        debug: bool = False,
+    ):
         logging.basicConfig(
             level=logging.DEBUG if debug else logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(filename)s - Line: %(lineno)d - %(funcName)s - %(message)s",
@@ -16,6 +23,7 @@ class VectorDB(ABC):
             ],
         )
         self.__log = logging.getLogger(self.__class__.__name__)
+        self._distance_function = distance_function
 
         self.__test_connection(host, port)
 

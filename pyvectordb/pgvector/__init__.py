@@ -23,7 +23,7 @@ class PgvectorDB(VectorDB):
         collection: str,
         distance_function: DistanceFunction | str = DistanceFunction.L2,
     ) -> None:
-        super().__init__(host, port)
+        super().__init__(host, port, distance_function)
 
         self.db_user = user or self.__raise_value_error("db_user")
         self.db_password = password or self.__raise_value_error("db_password")

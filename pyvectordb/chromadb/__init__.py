@@ -20,7 +20,7 @@ class ChromaDB(VectorDB):
         distance_function: DistanceFunction | str = DistanceFunction.L2,
         debug: bool = False,
     ) -> None:
-        super().__init__(host, port, debug)
+        super().__init__(host, port, distance_function, debug)
 
         self.host = host or self.__raise_value_error("host")
         self.port = port or self.__raise_value_error("port")

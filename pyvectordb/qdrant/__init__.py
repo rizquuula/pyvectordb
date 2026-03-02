@@ -17,7 +17,7 @@ class QdrantDB(VectorDB):
         vector_size: int = None,
         distance_function: DistanceFunction | str = DistanceFunction.EUCLIDEAN,
     ) -> None:
-        super().__init__(host, port)
+        super().__init__(host, port, distance_function)
 
         self.host = host or self.__raise_value_error("host")
         self.api_key = api_key
