@@ -1,10 +1,19 @@
 # PyVectorDB
 
+[![GitHub license](https://img.shields.io/github/license/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/network)
+![GitHub watchers](https://img.shields.io/github/watchers/rizquuula/pyvectordb)
+[![GitHub issues](https://img.shields.io/github/issues/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/pulls)
+[![Contributors](https://img.shields.io/github/contributors/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/graphs/contributors)
+![GitHub last commit](https://img.shields.io/github/last-commit/rizquuula/pyvectordb)
+![Commit activity](https://img.shields.io/github/commit-activity/y/rizquuula/pyvectordb)
+[![GitHub repo size](https://img.shields.io/github/repo-size/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
+[![GitHub languages](https://img.shields.io/github/languages/top/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
+[![GitHub languages count](https://img.shields.io/github/languages/count/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb)
 [![PyPI Version](https://img.shields.io/pypi/v/pyvectordb)](https://pypi.org/project/pyvectordb/)
 [![Python Version](https://img.shields.io/pypi/python-version/pyvectordb)](https://pypi.org/project/pyvectordb/)
-[![Tests](https://github.com/rizquuula/pyvectordb/actions/workflows/test.yml/badge.svg)](https://github.com/rizquuula/pyvectordb/actions)
-[![License](https://img.shields.io/github/license/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/blob/main/LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/rizquuula/pyvectordb)](https://github.com/rizquuula/pyvectordb/graphs/contributors)
 
 **Simple** Python wrapper for CRUD operations and vector similarity search across multiple vector databases.
 
